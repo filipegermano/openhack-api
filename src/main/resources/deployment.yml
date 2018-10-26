@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-server2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft-server2
+  template:
+    metadata:
+      labels:
+        app: minecraft-server2
+    spec:
+      containers:
+        - name: minecraft-server2
+        image: openhack/minecraft-server:2.0
+        env:
+          - name: EULA
+          value: "TRUE"
+          volumeMounts:
+            - mountPath: /data
+            name: server-state
+            subPath: minecraft-server2
+        ports:
+          - containerPort: 25565
+          name: game
+          - containerPort: 25575
+          name: rcon
+    volumes:
+      - name: server-state
+      persistentVolumeClaim:
+        claimName: azurefile
